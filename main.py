@@ -3,7 +3,7 @@
 from sklearn.model_selection import train_test_split
 import data_processing as d
 import tensorflow as tf
-from tensorflow.keras import datasets, layers, models
+from keras.layers import BatchNormalization, Dense, Reshape, Flatten, Conv1D, Concatenate, layers
 import tensorflow_addons as tfa
 from tensorflow import keras
 import matplotlib.pyplot as plt
@@ -20,9 +20,11 @@ def getModel():
     # all three layers are arbitrarily chosen, don't know input shape
     return keras.Sequential(
         [
-            layers.Dense(LAYERS, activation='relu', name='layer1'),
+            layers.Conv1D(596, (3, 3), activation='relu', input_shape=(1, 7966, 1)),
+            layers.MaxPooling1D((2, 2)),
             layers.Dense(LAYERS / 2, activation='relu', name='layer2'),
-            layers.Dense(LAYERS / 4, activation='relu', name='layer3')
+            layers.Dense(LAYERS / 4, activation='relu', name='layer3'),
+            layers.Dense(13, name='output_layer'),
         ])
 
 def plot(history, epochs, metric, type):
@@ -44,8 +46,7 @@ if __name__ == '__main__':
                                                 keras.metrics.MeanSquaredError(),
                                                 keras.metrics.Precision(), 
                                                 keras.metrics.Recall(),
-                                                keras.metrics.RootMeanSquaredError(),
-                                                'matthews_correlation'])
+                                                keras.metrics.RootMeanSquaredError()])
     
     history = model.fit(
         X_train,
