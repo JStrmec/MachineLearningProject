@@ -1,66 +1,60 @@
 # Building a Convolutional Neural Network to classifiy computer 
 # attacks as types of malware
-from sklearn.model_selection import train_test_split
+import torch.nn as nn
+import torch
 import data_processing as d
-import tensorflow as tf
-from keras.layers import BatchNormalization, Dense, Reshape, Flatten, Conv1D, Concatenate, layers
-import tensorflow_addons as tfa
-from tensorflow import keras
-import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+
 
 X, y = d.get_encoded_data()
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=1)
 
-LAYERS = 52 # arbitrary number for now
-EPOCHS = 1000 # arbitrary
+class ConvNet(nn.Module):
+    def __init__(self, num_classes=13):
+        super(ConvNet, self).__init__()
+        self.layer1 = nn.Sequential(
+            nn.Conv2d(1, 16, kernel_size=5, stride=1, padding=2),
+            nn.BatchNorm2d(16),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2))
+        self.layer2 = nn.Sequential(
+            nn.Conv2d(16, 32, kernel_size=5, stride=1, padding=2),
+            nn.BatchNorm2d(32),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2))
+        self.fc = nn.Linear(7*7*32, num_classes)
+        
+    def forward(self, x):
+        out = self.layer1(x)
+        out = self.layer2(out)
+        out = out.reshape(out.size(0), -1)
+        out = self.fc(out)
+        return out
 
-# TODO: define all the testing data
+class ConvNet(nn.Module):
+    def __init__(self, num_classes=10):
+        super(ConvNet, self).__init__()
+        self.layer1 = nn.Sequential(
+            nn.Conv2d(1, 16, kernel_size=5, stride=1, padding=2),
+            nn.BatchNorm2d(16),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2))
+        self.layer2 = nn.Sequential(
+            nn.Conv2d(16, 32, kernel_size=5, stride=1, padding=2),
+            nn.BatchNorm2d(32),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2))
+        self.fc = nn.Linear(7*7*32, num_classes)
+        
+    def forward(self, x):
+        out = self.layer1(x)
+        out = self.layer2(out)
+        out = out.reshape(out.size(0), -1)
+        out = self.fc(out)
+        return out
 
-def getModel():
-    # all three layers are arbitrarily chosen, don't know input shape
-    return keras.Sequential(
-        [
-            layers.Conv1D(596, (3, 3), activation='relu', input_shape=(1, 7966, 1)),
-            layers.MaxPooling1D((2, 2)),
-            layers.Dense(LAYERS / 2, activation='relu', name='layer2'),
-            layers.Dense(LAYERS / 4, activation='relu', name='layer3'),
-            layers.Dense(13, name='output_layer'),
-        ])
+model_conv = ConvNet(13)
 
-def plot(history, epochs, metric, type):
-    loss_train = history.history[metric]
-    epochs = range(1,epochs)
-    plt.plot(epochs, loss_train, 'g', label=metric)
-    plt.title(type, metric)
-    plt.xlabel('Epochs')
-    plt.ylabel(metric)
-    plt.legend()
-    plt.show()
-
-if __name__ == '__main__':
-    model = getModel()
-    
-    optimizer = keras.optimizers.Adam(learning_rate=0.001)
-    
-    model.compile(optimizer, 'mse', metrics=[keras.metrics.Accuracy(), 
-                                                keras.metrics.MeanSquaredError(),
-                                                keras.metrics.Precision(), 
-                                                keras.metrics.Recall(),
-                                                keras.metrics.RootMeanSquaredError()])
-    
-    history = model.fit(
-        X_train,
-        y_train,
-        batch_size=64,
-        epochs=EPOCHS
-    )
-    
-    for metric in history:
-        plot(history, EPOCHS, metric, "Training")
-    
-    print("Evaluate on test data")
-    results = model.evaluate(X_test, y_test, batch_size=128)
-    print("test loss, test acc:", results)
-    
-    for metric in results:
-        plot(results, EPOCHS, metric, "Testing")
+# Loss and optimizer
+criterion = nn.CrossEntropyLoss()
+optimizer = torch.optim.Adam(model_conv.parameters(), lr=0.01)
