@@ -13,7 +13,7 @@ def get_encoded_data():
     x_temp = []
 
     # Read in csv file
-    df = pd.read_csv('datasets/VirusSample.csv')
+    df = pd.read_csv('MachineLearningProject/datasets/VirusSample.csv')
 
     # Extract string column api to split for encoding
     api_col = df["api"]
@@ -42,8 +42,9 @@ def get_encoded_data():
         if(index == 9795):
             break
         x_data[index][list_api.index(x)] = 1
-
+    count = 0
     for x in class_col:
-        y_data[class_col.index(x)][list_of_classes.index(x)] = 1
+        y_data[count][list_of_classes.index(x)] = 1
+        count+=1
         
     return x_data, y_data

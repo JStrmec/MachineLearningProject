@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 X, y = d.get_encoded_data()
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=1)
 
-LAYERS = 16 # arbitrary number for now
+LAYERS = 52 # arbitrary number for now
 EPOCHS = 1000 # arbitrary
 
 # TODO: define all the testing data
