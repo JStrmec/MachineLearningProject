@@ -13,7 +13,7 @@ def get_encoded_data():
     x_temp = []
 
     # Read in csv file
-    df = pd.read_csv('MachineLearningProject/datasets/VirusSample.csv')
+    df = pd.read_csv('datasets/VirusSample.csv')
 
     # Extract string column api to split for encoding
     api_col = df["api"]
