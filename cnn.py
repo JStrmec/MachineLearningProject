@@ -1,11 +1,18 @@
 import tensorflow as tf
 
+from unicodedata import name
+import tensorflow as tf
+import keras.layers as layers
+from keras.layers import BatchNormalization, Dense, Reshape, Flatten, Conv1D, Concatenate, Dropout
+import tensorflow_addons as tfa
+from tensorflow import keras
+import matplotlib.pyplot as plt
 from tensorflow.keras import datasets, layers, models
 import tensorflow_addons as tfa
 from tensorflow import keras
 import matplotlib.pyplot as plt
 
-LAYERS = 16 # arbitrary number for now
+LAYERS = 52 # arbitrary number for now
 EPOCHS = 1000 # arbitrary
 
 # TODO: define all the testing data
@@ -14,9 +21,13 @@ def getModel():
     # all three layers are arbitrarily chosen, don't know input shape
     return keras.Sequential(
         [
-            layers.Dense(LAYERS, activation='relu', name='layer1'),
+            layers.Conv1D(596, 4, activation='relu', input_shape=(None,13)),
             layers.Dense(LAYERS / 2, activation='relu', name='layer2'),
-            layers.Dense(LAYERS / 4, activation='relu', name='layer3')
+            layers.Dropout(.3),
+            layers.Conv1D(298, 2, activation='relu'),
+            layers.Dense(LAYERS / 4, activation='relu', name='layer3'),
+            layers.Dropout(.3),
+            layers.Dense(13, name='output_layer'),
         ])
 
 def plot(history, epochs, metric, type):
@@ -38,11 +49,10 @@ if __name__ == '__main__':
                                                 keras.metrics.MeanSquaredError(),
                                                 keras.metrics.Precision(), 
                                                 keras.metrics.Recall(),
-                                                keras.metrics.RootMeanSquaredError(),
-                                                'matthews_correlation'])
+                                                keras.metrics.RootMeanSquaredError()])
     
     history = model.fit(
-        x_train,
+        X_train,
         y_train,
         batch_size=64,
         epochs=EPOCHS
@@ -52,10 +62,8 @@ if __name__ == '__main__':
         plot(history, EPOCHS, metric, "Training")
     
     print("Evaluate on test data")
-    results = model.evaluate(x_test, y_test, batch_size=128)
+    results = model.evaluate(X_test, y_test, batch_size=128)
     print("test loss, test acc:", results)
     
     for metric in results:
         plot(results, EPOCHS, metric, "Testing")
-    
-    
