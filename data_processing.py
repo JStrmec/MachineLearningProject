@@ -3,7 +3,7 @@
 from sklearn.preprocessing import OneHotEncoder,LabelEncoder,StandardScaler,LabelBinarizer
 import pandas as pd
 import numpy as np
-#ueyrifuby riygaef khagerkfhg
+
 def get_encoded_data():
     # Variables
     set_api = set() 
