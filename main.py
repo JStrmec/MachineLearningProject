@@ -8,8 +8,8 @@ from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 
 X, y = d.get_encoded_data()
+print(X.shape, y.shape)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=1)
-
 
 #####MESSING AROUND#############
 # Importing libraries
@@ -22,8 +22,9 @@ from keras.preprocessing import sequence
 
 # Building the CNN Model
 model = Sequential()
-model.add(layers.Conv1D(128, 5, activation='relu',  input_shape=(None,7966)))
+model.add(layers.Conv1D(128, 5, activation='relu',  input_shape=[1,7966], padding='same'))
 model.add(layers.GlobalMaxPooling1D())
+model.add(layers.Flatten())
 model.add(layers.Dense(26, activation='relu'))
 model.add(layers.Dense(13, activation='sigmoid'))
 model.compile(optimizer='adam',
