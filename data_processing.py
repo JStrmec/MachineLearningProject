@@ -1,8 +1,26 @@
 # imports
-
+from sklearn.model_selection import train_test_split             
+from keras.preprocessing.text import Tokenizer                    
+from keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import OneHotEncoder,LabelEncoder,StandardScaler,LabelBinarizer
 import pandas as pd
 import numpy as np
+
+# Read in csv file
+def read_csv():
+    df = pd.read_csv('MachineLearningProject/datasets/VirusSample.csv')
+    return df
+
+
+def get_data(return_x_y = False): 
+    # Read in csv file
+    df = read_csv()
+    if(return_x_y):
+        return df["api"].values, df['class'].values
+    else:
+        df.drop['file']
+        return df
+
 
 def get_encoded_data():
     # Variables
@@ -14,7 +32,7 @@ def get_encoded_data():
     x_temp = []
 
     # Read in csv file
-    df = pd.read_csv('MachineLearningProject/datasets/VirusSample.csv')
+    df = read_csv()
 
     # Extract string column api to split for encoding
     api_col = df["api"]
@@ -27,10 +45,10 @@ def get_encoded_data():
         x_temp.append(temp)
         full_api_values_list.extend(temp)
         set_api.update(temp)
-
+        
     # Create matrix of 0 to begin encoding with
     x_data = np.zeros((api_col.size, len(set_api))) # (9795,7966)
-    y_data = np.zeros((api_col.size, 13)) # (9795,7966)
+    y_data = np.zeros((api_col.size, 13)) # (9795,13)
 
     # Encode x data 
     # Convert set to list to get indexs for next step
@@ -49,3 +67,29 @@ def get_encoded_data():
         count+=1
         
     return x_data, y_data
+
+
+def tokenize_data():
+    df = read_csv()
+    x = df['api'].values
+    y = df['class'].values
+
+    x_train,x_test,y_train,y_test = train_test_split(
+                                                    x, y,  
+                                                    test_size=0.25,  
+                                                    random_state=1000)
+
+    tokenizer = Tokenizer(num_words=7966)
+    tokenizer.fit_on_texts(x_train)
+
+    X_train = tokenizer.texts_to_sequences(x_train)
+    X_test = tokenizer.texts_to_sequences(x_test)
+    # Adding 1 because of reserved 0 index
+    vocab_size = len(tokenizer.word_index) + 1                          
+
+    maxlen = 100
+
+    X_train = pad_sequences(X_train, padding='post', maxlen=maxlen)
+    X_test = pad_sequences(X_test, padding='post', maxlen=maxlen)
+
+
