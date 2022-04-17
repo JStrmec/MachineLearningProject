@@ -1,11 +1,9 @@
-# imports
-from sklearn.model_selection import train_test_split             
+# imports          
+import numpy as np
+import pandas as pd
 from keras.preprocessing.text import Tokenizer                    
 from keras.preprocessing.sequence import pad_sequences
-from sklearn.preprocessing import OneHotEncoder,LabelEncoder,StandardScaler,LabelBinarizer
-from sklearn.feature_extraction.text import CountVectorizer
-import pandas as pd
-import numpy as np
+from sklearn.preprocessing import OneHotEncoder,LabelEncoder
 
 # Read in csv file
 def read_csv():
