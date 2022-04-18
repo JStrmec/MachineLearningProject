@@ -2,11 +2,10 @@
 # attacks as types of malware
 import torch.nn as nn
 import torch
-import numpy as np
 import data_processing as d
 from torch.autograd import Variable
+from sklearn.metrics import accuracy_score
 from keras.preprocessing.text import Tokenizer
-from keras.preprocessing.sequence import pad_sequences
 from sklearn.metrics import roc_auc_score, log_loss, roc_auc_score, roc_curve, auc
 
 X, y= d.get_encoded_data()
@@ -33,7 +32,7 @@ N_FEATURES=X.shape[1]
 # Number of rows
 NUM_ROWS_TRAINNING=X.shape[0]
 # this number has no meaning except for being divisable by 2
-N_MULT_FACTOR=8 # min should be 4
+N_MULT_FACTOR=10 # min should be 4
 # Size of first linear layer
 N_HIDDEN=N_FEATURES * N_MULT_FACTOR
 # CNN kernel size
@@ -50,19 +49,18 @@ class Net2(nn.Module):
         self.n_cnn_kernel=n_cnn_kernel
         self.n_mult_factor=n_mult_factor
         self.n_l2_hidden=self.n_hidden * (self.n_mult_factor - self.n_cnn_kernel + 3)
-#         self.n_out_hidden=int (self.n_l2_hidden/2)
                         
         self.l1 = nn.Sequential(
             torch.nn.Linear(self.n_feature, self.n_hidden),
-            torch.nn.Dropout(p=1 -.85),            
-            torch.nn.LeakyReLU (0.1),            
+            torch.nn.Dropout(p=.4),            
+            torch.nn.LeakyReLU (),            
             torch.nn.BatchNorm1d(self.n_hidden, eps=1e-05, momentum=0.1, affine=True)            
         )                
         self.c1= nn.Sequential(            
             torch.nn.Conv1d(self.n_feature, self.n_hidden, 
                             kernel_size=(self.n_cnn_kernel,), stride=(1,), padding=(1,)),
-            torch.nn.Dropout(p=1 -.75),            
-            torch.nn.LeakyReLU (0.1),
+            torch.nn.Dropout(p=.25),            
+            torch.nn.LeakyReLU (),
             torch.nn.BatchNorm1d(self.n_hidden, eps=1e-05, momentum=0.1, affine=True)        
         )                        
         self.out = nn.Sequential(
@@ -73,18 +71,14 @@ class Net2(nn.Module):
 
         
     def forward(self, x):
-        
         varSize=x.data.shape[0] # must be calculated here in forward() since its is a dynamic size        
         x=self.l1(x)                
-        
         # for CNN        
         x = x.view(varSize,self.n_feature,self.n_mult_factor)
-        
         x=self.c1(x)
-        
         # for Linear layer
         x = x.view(varSize, self.n_hidden * (self.n_mult_factor -self.n_cnn_kernel + 3))
-#         x=self.l2(x)                    
+#       x=self.l2(x)                    
         x=self.out(x) 
         x=self.sig(x)
         return x
@@ -92,7 +86,7 @@ class Net2(nn.Module):
 net = Net2(n_feature=N_FEATURES, n_hidden=N_HIDDEN, n_output=13, n_cnn_kernel=N_CNN_KERNEL)   # define the network    
 
 
-optimizer = torch.optim.Adam(net.parameters(), lr=0.005,weight_decay=5e-4) #  L2 regularization
+optimizer = torch.optim.Adam(net.parameters(), lr=0.01,weight_decay=5e-4) #  L2 regularization
 loss_func=torch.nn.BCELoss() # Binary cross entropy: http://pytorch.org/docs/nn.html#bceloss
 
 epochs=100
@@ -103,6 +97,7 @@ Y_tensor_train= YnumpyToTensor(y)
 
 print(type(X_tensor_train.data), type(Y_tensor_train.data)) # should be 'torch.cuda.FloatTensor'
 
+count = 0
 # From here onwards, we must only use PyTorch Tensors
 for step in range(epochs):
     out = net(X_tensor_train)                 # input x and predict based on x
@@ -111,16 +106,16 @@ for step in range(epochs):
     optimizer.zero_grad()   # clear gradients for next train
     cost.backward()         # backpropagation, compute gradients
     optimizer.step()        # apply gradients
-                           
+                         
     if step % 10 == 0:        
         loss = cost.data
         all_losses.append(loss)
-        print(step, cost.data.cpu().numpy())        
+        count+=1    
         prediction = (net(X_tensor_train).data).float() # probabilities             
         pred_y = prediction.cpu().numpy().squeeze()
         target_y = Y_tensor_train.cpu().data.numpy()                        
-        tu = ((pred_y == target_y).mean(),log_loss(target_y, pred_y),roc_auc_score(target_y,pred_y ))
-        print ('ACC={}, LOG_LOSS={}, ROC_AUC={} '.format(*tu))        
+        tu = (count, (pred_y == target_y).mean(),log_loss(target_y, pred_y),roc_auc_score(target_y,pred_y ))
+        print ('step {} acc = {}, loss = {}, roc_auc = {} \n'.format(*tu))        
                 
 import matplotlib.pyplot as plt
 plt.plot(all_losses)

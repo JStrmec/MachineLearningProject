@@ -1,6 +1,7 @@
 # imports          
 import numpy as np
 import pandas as pd
+from sklearn.utils import shuffle
 from keras.preprocessing.text import Tokenizer                    
 from keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import OneHotEncoder,LabelEncoder
@@ -17,7 +18,8 @@ def get_y():
 
 def get_data(): 
     # Read in csv file
-    df = read_csv()
+    df = shuffle(read_csv())
+    df = shuffle(df)
     return df["api"].values, df['class'].values
 
 def get_encoded_data():
@@ -31,7 +33,7 @@ def get_encoded_data():
     tokenizer.fit_on_texts(x)
     x_train = tokenizer.texts_to_sequences(x) 
     # Pad sequences with zeros
-    x_train = pad_sequences(x_train, padding='post', maxlen=100)
+    x_train = pad_sequences(x_train, padding='post', maxlen=50)
 
     count = 0
     for z in y:
