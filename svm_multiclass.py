@@ -1,4 +1,3 @@
-import numpy as np
 import data_processing as d
 from sklearn.metrics import accuracy_score
 from sklearn.pipeline import make_pipeline
