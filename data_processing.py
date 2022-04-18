@@ -10,6 +10,10 @@ def read_csv():
     df = pd.read_csv('MachineLearningProject/datasets/VirusSample.csv')
     return df
 
+def get_y():
+    df = read_csv()
+    y = LabelEncoder().fit_transform(df['class'].values)
+    return  y
 
 def get_data(): 
     # Read in csv file
