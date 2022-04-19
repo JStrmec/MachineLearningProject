@@ -88,7 +88,7 @@ net = Net2(n_feature=N_FEATURES, n_hidden=N_HIDDEN, n_output=13, n_cnn_kernel=N_
 optimizer = torch.optim.Adam(net.parameters(), lr=0.01,weight_decay=5e-4) #  L2 regularization
 loss_func=torch.nn.BCELoss() # Binary cross entropy: http://pytorch.org/docs/nn.html#bceloss
 
-epochs=100
+epochs=100 #500 
 all_losses = []
 
 X_tensor_train= XnumpyToTensor(X)
@@ -106,7 +106,7 @@ for step in range(epochs):
     cost.backward()         # backpropagation, compute gradients
     optimizer.step()        # apply gradients
                          
-    if step % 10 == 0:        
+    if step % 10 == 0:  #100 #50      
         loss = cost.data
         all_losses.append(loss)
         count+=1    
