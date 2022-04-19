@@ -57,3 +57,13 @@ def encodeData(X , y):
   print(y.shape())
   return onehot_encoded, y
 
+def standarize_predictions(pred):
+    for x in range(0,len(pred)):
+        z = pred[x]
+        max_val = max(z)
+        for y in range(0,len(z)):
+            if pred[x][y] != max_val:
+                pred[x][y] = 0
+            else:
+                pred[x][y] = 1
+    return pred

@@ -38,18 +38,6 @@ N_HIDDEN=N_FEATURES * N_MULT_FACTOR
 # CNN kernel size
 N_CNN_KERNEL=3
 MAX_POOL_KERNEL=4
-
-
-def do_thing_I_need(pred):
-    for x in range(0,len(pred)):
-        z = pred[x]
-        max_val = max(z)
-        for y in range(0,len(z)):
-            if pred[x][y] != max_val:
-                pred[x][y] = 0
-            else:
-                pred[x][y] = 1
-    return pred
     
 class Net2(nn.Module):    
     def __init__(self, n_feature, n_hidden, n_output, n_cnn_kernel, n_mult_factor=N_MULT_FACTOR):
@@ -123,7 +111,7 @@ for step in range(epochs):
         all_losses.append(loss)
         count+=1    
         prediction = (net(X_tensor_train).data).float() # probabilities             
-        pred_y = do_thing_I_need(prediction).numpy().squeeze()
+        pred_y = d.standarize_predictions(prediction).numpy().squeeze()
         target_y = Y_tensor_train.cpu().data.numpy()                        
         tu = (count, (pred_y == target_y).mean(),log_loss(target_y, pred_y),roc_auc_score(target_y,pred_y ))
         print ('step {} acc = {}, loss = {}, roc_auc = {} \n'.format(*tu))        
