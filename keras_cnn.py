@@ -1,15 +1,5 @@
-import tensorflow as tf
-
-from unicodedata import name
-import tensorflow as tf
+from tensorflow import keras
 import keras.layers as layers
-from keras.layers import BatchNormalization, Dense, Reshape, Flatten, Conv1D, Concatenate, Dropout
-import tensorflow_addons as tfa
-from tensorflow import keras
-import matplotlib.pyplot as plt
-from tensorflow.keras import datasets, layers, models
-import tensorflow_addons as tfa
-from tensorflow import keras
 import matplotlib.pyplot as plt
 
 LAYERS = 52 # arbitrary number for now
