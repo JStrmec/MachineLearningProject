@@ -70,12 +70,12 @@ def YnumpyToTensor(y_data_np):
 
 
 def splitData(x, y):
-    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.33, random_state=1)
-    return np.array(X_train), np.array(X_test), np.array(y_train), np.array(y_test)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.33, random_state=1)
+    return np.array(x_train), np.array(x_test), np.array(y_train), np.array(y_test)
 
-def toTensors(X_train, X_test, y_train, y_test):
-    X_tensor_train = XnumpyToTensor(X_train)
-    Y_tensor_train = YnumpyToTensor(y_train)
-    X_tensor_test = XnumpyToTensor(X_test)
-    Y_tensor_test = YnumpyToTensor(y_test)
-    return X_tensor_train,Y_tensor_train,X_tensor_test,Y_tensor_test 
+def toTensors(x_train, x_test, y_train, y_test):
+    x_tensor_train = XnumpyToTensor(x_train)
+    y_tensor_train = YnumpyToTensor(y_train)
+    x_tensor_test = XnumpyToTensor(x_test)
+    y_tensor_test = YnumpyToTensor(y_test)
+    return x_tensor_train,y_tensor_train,x_tensor_test,y_tensor_test 
