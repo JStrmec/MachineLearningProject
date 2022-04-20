@@ -51,7 +51,7 @@ class CNN(nn.Module):
         x=self.sig(x)
         return x
 
-def trainTestCNN(net, x_tensor_train,  y_tensor_train, x_tensor_test,y_tensor_test, epochs = 500):
+def trainTestCNN(net, x_tensor_train, y_tensor_train, epochs = 500):
     all_losses, train_acc, acc = [],[],[]
     optimizer = torch.optim.Adam(net.parameters(), lr=0.01,weight_decay=5e-4) #  L2 regularization
     loss_func=torch.nn.BCELoss() # Binary cross entropy: http://pytorch.org/docs/nn.html#bceloss
@@ -69,11 +69,11 @@ def trainTestCNN(net, x_tensor_train,  y_tensor_train, x_tensor_test,y_tensor_te
             loss = cost.data
             all_losses.append(loss)
             count+=1    
-            prediction = (net(x_tensor_test).data).float() # probabilities             
+            prediction = (net(x_tensor_train).data).float() # probabilities             
             pred_y = d.standarize_predictions(prediction).numpy().squeeze()
-            target_y =  y_tensor_test.cpu().data.numpy()        
+            target_y = y_tensor_train.cpu().data.numpy()        
             accuracy = (pred_y == target_y).mean()  
-            acc.append(accuracy)            
-            tu = (count,accuracy ,log_loss(target_y, pred_y),roc_auc_score(target_y,pred_y ))
-            print ('step {} acc = {}, loss = {}, roc_auc = {} \n'.format(*tu))     
+            acc.append(accuracy)    
+            tu = (count,accuracy ,log_loss(target_y, pred_y),roc_auc_score(target_y,pred_y))
+            print ('step {} acc = {}, loss = {}, roc_auc = {} \n'.format(*tu))    
     return {'Binary cross entropy loss':all_losses},{'Accuracy':acc}
