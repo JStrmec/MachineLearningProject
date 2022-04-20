@@ -7,7 +7,7 @@ import keras_cnn as kcnn
 import data_processing as d  
 from sklearn.metrics import log_loss, roc_curve, auc
 
-X, y = d.get_encoded_data()
+X, y = d.get_encoded_data(file='MachineLearningProject/datasets/VirusSample.csv')
 X_train, X_test, y_train, y_test = d.splitData(X, y)
 # Convert data to Tensors to Incease Computation time for CNN
 X_tensor_train,Y_tensor_train,X_tensor_test,Y_tensor_test  = d.toTensors(X_train, y_train, X_test, y_test)

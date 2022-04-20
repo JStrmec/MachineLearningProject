@@ -2,6 +2,7 @@
 import torch         
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from sklearn.utils import shuffle
 from torch.autograd import Variable
 from sklearn.preprocessing import LabelEncoder
@@ -10,30 +11,30 @@ from sklearn.model_selection import train_test_split
 from keras.preprocessing.sequence import pad_sequences
 
 # Read in csv file
-def read_csv():
-    df = pd.read_csv('MachineLearningProject/datasets/VirusSample.csv')
+def read_csv(file):
+    df = pd.read_csv(file)#'MachineLearningProject/datasets/VirusSample.csv'
     return df
 
 
-def get_SVM_y():
-    df = read_csv()
+def get_SVM_y(file ='datasets/VirusSample.csv'):
+    df = read_csv(file)
     y = LabelEncoder().fit_transform(df['class'].values)
     return  y
 
 
-def get_data(): 
+def get_data(file): 
     # Read in csv file
-    df = shuffle(read_csv())
+    df = shuffle(read_csv(file))
     df = shuffle(df)
     return df["api"].values, df['class'].values
 
 
-def get_encoded_data():
+def get_encoded_data(file ='datasets/VirusSample.csv'):
     # Variables
     #len(set_api)=(7966)
     y_data = np.zeros((9795, 13)) # (9795,13)
     list_of_classes =['Adware', 'Agent', 'Backdoor', 'Trojan', 'Virus', 'Worms', 'Downloader', 'Spyware', 'Ransomware', 'Riskware', 'Dropper', 'Crypt', 'Keylogger']
-    x ,y = get_data()
+    x ,y = get_data(file)
 
     # tokenizing
     tokenizer = Tokenizer()
