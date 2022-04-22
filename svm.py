@@ -10,11 +10,12 @@ import torch
 from torch.autograd import Variable
 
 
-X,_ = d.get_encoded_data()
-y = d.get_y()
+X,_ = d.get_encoded_data('MachineLearningProject/datasets/VirusSample.csv')
+y = d.get_SVM_y('MachineLearningProject/datasets/VirusSample.csv')
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=1)
 
 clf = make_pipeline(StandardScaler(), SVC(gamma='auto'))
+
 clf.fit(X_train, y_train)
 #Pipeline(steps=[('standardscaler', StandardScaler()),('svc', SVC(gamma='auto'))])
 predict = clf.predict(X_test)
