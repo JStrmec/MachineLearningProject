@@ -1,19 +1,20 @@
 import keras.layers as layers
+from sklearn.metrics import accuracy_score
 from tensorflow import keras
 import matplotlib.pyplot as plt
 import data_processing as d
 from sklearn.model_selection import train_test_split
 import numpy as np
 
-KERNEL_SIZE = 3
-FILTERS = 256
-DROPOUT_RATE = 0.25
+# KERNEL_SIZE = 3
+# FILTERS = 256
+# DROPOUT_RATE = 0.25
 
-EPOCHS = 100 # arbitrary
+# EPOCHS = 100 # arbitrary
 
-X, y = d.get_encoded_data()
+# X, y = d.get_encoded_data()
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=1)
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=1)
 
 class keras_CNN():
     def __init__(self, X_train, X_test, y_train, y_test, kernel_size, epochs):
@@ -23,19 +24,21 @@ class keras_CNN():
         self.X_test = X_test
         self.y_train = y_train
         self.y_test = y_test
-        
+        self.FILTER = 256
+        self.DROPOUT_RATE = 0.25
+           
     def getModel(self):
         return keras.Sequential(
             [
-                layers.Conv1D(FILTERS, KERNEL_SIZE, padding='same', activation='relu', name="layer1", input_shape=X_train.shape[1:]),
+                layers.Conv1D(self.FILTERS, self.KERNEL_SIZE, padding='same', activation='relu', name="layer1", input_shape=self.X_train.shape[1:]),
                 layers.LeakyReLU(),
-                layers.Dropout(DROPOUT_RATE),
-                layers.Conv1D(FILTERS / 2, KERNEL_SIZE, padding='same', activation='relu', name="layer2"),
+                layers.Dropout(self.DROPOUT_RATE),
+                layers.Conv1D(self.FILTERS / 2, self.KERNEL_SIZE, padding='same', activation='relu', name="layer2"),
                 layers.LeakyReLU(),
-                layers.Dropout(DROPOUT_RATE),
-                layers.Conv1D(FILTERS / 4, KERNEL_SIZE, padding='same', activation='relu', name="layer3"),
+                layers.Dropout(self.DROPOUT_RATE),
+                layers.Conv1D(self.FILTERS / 4, self.KERNEL_SIZE, padding='same', activation='relu', name="layer3"),
                 layers.LeakyReLU(),
-                layers.Dropout(DROPOUT_RATE),
+                layers.Dropout(self.DROPOUT_RATE),
                 layers.Dense(13, activation='softmax', name='output_layer')
             ])
 
@@ -72,18 +75,19 @@ class keras_CNN():
         # model.build()
         # model.summary()
         history = model.fit(
-            X_train,
-            y_train,
+            self.X_train,
+            self.y_train,
             batch_size=32,
-            epochs=EPOCHS
+            steps_per_epoch=20,
+            epochs=self.EPOCHS
         )
     
         for metric in history.history:
-            self.plot(history.history, EPOCHS, metric, "Training")
+            self.plot(history.history, self.EPOCHS, metric, "Training")
     
         print("Evaluate on test data")
-        results = model.evaluate(X_train, y_train)
-        print("test loss, test acc:", results)
+        results = model.predict(self.X_test, batch_size=32)
+        print("test loss, test acc:", accuracy_score(results, self.y_test))
     
         # for metric in results:
         #     plt.plot(metric)
