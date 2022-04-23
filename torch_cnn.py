@@ -65,7 +65,7 @@ def trainTestCNN(net, x_tensor_train, y_tensor_train, epochs = 100):
         cost.backward()         # backpropagation, compute gradients
         optimizer.step()        # apply gradients
                             
-        if step % 10 == 0:  
+        if step % 1 == 0:  
             loss = cost.data
             all_losses.append(loss)
             count+=1    
