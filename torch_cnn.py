@@ -75,5 +75,5 @@ def trainTestCNN(net, x_tensor_train, y_tensor_train, epochs = 100):
             accuracy = (pred_y == target_y).mean()  
             acc.append(accuracy)    
             tu = (count,accuracy ,log_loss(target_y, pred_y),roc_auc_score(target_y,pred_y))
-            print ('step {} acc = {}, loss = {}, roc_auc = {} \n'.format(*tu))    
+            #print ('step {} acc = {}, loss = {}, roc_auc = {} \n'.format(*tu))    
     return {'Binary cross entropy loss':all_losses},{'Accuracy':acc}

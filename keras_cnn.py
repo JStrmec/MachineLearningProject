@@ -1,20 +1,9 @@
-import keras.layers as layers
 from sklearn.metrics import accuracy_score
-from tensorflow import keras
 import matplotlib.pyplot as plt
+import keras.layers as layers
+from tensorflow import keras
 import data_processing as d
-from sklearn.model_selection import train_test_split
 import numpy as np
-
-# KERNEL_SIZE = 3
-# FILTERS = 256
-# DROPOUT_RATE = 0.25
-
-# EPOCHS = 100 # arbitrary
-
-# X, y = d.get_encoded_data()
-
-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=1)
 
 class keras_CNN():
     def __init__(self, X_train, X_test, y_train, y_test, kernel_size, epochs):
@@ -24,7 +13,7 @@ class keras_CNN():
         self.X_test = X_test
         self.y_train = y_train
         self.y_test = y_test
-        self.FILTER = 256
+        self.FILTERS = 256
         self.DROPOUT_RATE = 0.25
            
     def getModel(self):
@@ -67,28 +56,21 @@ class keras_CNN():
         model = self.getModel()
         optimizer = keras.optimizers.Nadam(learning_rate=1e-3, decay=5e-4)
     
-        model.compile(optimizer, 'mse', metrics=[keras.metrics.Accuracy(),
-                                                    # keras.metrics.Precision(), 
-                                                    # keras.metrics.Recall()
-                                                    ])
+        model.compile(optimizer, 'mse', metrics=[keras.metrics.Accuracy()])
 
-        # model.build()
-        # model.summary()
-        history = model.fit(
-            self.X_train,
-            self.y_train,
-            batch_size=32,
-            steps_per_epoch=20,
-            epochs=self.EPOCHS
-        )
-    
-        for metric in history.history:
-            self.plot(history.history, self.EPOCHS, metric, "Training")
-    
-        print("Evaluate on test data")
-        results = model.predict(self.X_test, batch_size=32)
-        print("test loss, test acc:", accuracy_score(results, self.y_test))
-    
-        # for metric in results:
-        #     plt.plot(metric)
-        # plt.show()
+        accuracy = []
+
+        for x in range(0,10):
+            history = model.fit(
+                self.X_train,
+                self.y_train,
+                batch_size=32,
+                steps_per_epoch=10,
+                epochs=self.EPOCHS
+            )
+        
+            print("Evaluate on test data")
+            results = model.predict(self.X_test, batch_size=32)
+            accuracy.append(accuracy_score(results, self.y_test))
+            print("test loss, test acc:", accuracy_score(results, self.y_test))
+        return accuracy
