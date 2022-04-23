@@ -29,7 +29,7 @@ history = model.fit(
 #     cnn1D.plot(history.history, EPOCHS, metric)
 
 print("Evaluate on test data")
-results = model.predict(new_X_test, batch_size=64)
+results = model.predict(new_X_test, batch_size=256)
 results = results.reshape(results.shape[1], results.shape[2]).astype(int)
 count = failures = successes = 0
 for i in range(len(results)):
@@ -40,4 +40,4 @@ for i in range(len(results)):
 
 print(float(successes) / count)
 
-print("test acc:", accuracy_score(results, y_test))
+print("test acc:", float(successes) / count)
