@@ -11,7 +11,8 @@ VirusSample dataset includes the malware families of 1. Adware, 2. Agent, 3. Bac
 
 VirusShare dataset includes families of Adware, Agent, Backdoor, Downloader, Ransomware, Riskware, Trojan, Virus, Worms, Undefined, Spyware, Dropper, Crypt, Keylogger, Rootkit. 
 
-*Run Instructions*
-In a code editor that allows python, the most recent version if possible, open showcase.ipynb and run. Or results can be viewed in showcase.html.
+<b>*Run Instructions*
 
+In a code editor that allows python, the most recent version if possible, open showcase.ipynb and run. Or results can be viewed in showcase.html.<b>
+  
 https://towardsdatascience.com/malware-classification-using-convolutional-neural-networks-step-by-step-tutorial-a3e8d97122f
