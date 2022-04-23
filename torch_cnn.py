@@ -51,7 +51,7 @@ class CNN(nn.Module):
         x=self.sig(x)
         return x
 
-def trainTestCNN(net, x_tensor_train, y_tensor_train, epochs = 500):
+def trainTestCNN(net, x_tensor_train, y_tensor_train, epochs = 100):
     all_losses, train_acc, acc = [],[],[]
     optimizer = torch.optim.Adam(net.parameters(), lr=0.01,weight_decay=5e-4) #  L2 regularization
     loss_func=torch.nn.BCELoss() # Binary cross entropy: http://pytorch.org/docs/nn.html#bceloss
@@ -65,7 +65,7 @@ def trainTestCNN(net, x_tensor_train, y_tensor_train, epochs = 500):
         cost.backward()         # backpropagation, compute gradients
         optimizer.step()        # apply gradients
                             
-        if step % 100 == 0:  
+        if step % 10 == 0:  
             loss = cost.data
             all_losses.append(loss)
             count+=1    

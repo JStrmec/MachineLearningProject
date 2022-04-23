@@ -80,3 +80,13 @@ def toTensors(x, y):
     # x_tensor_test = XnumpyToTensor(x_test)
     # y_tensor_test = YnumpyToTensor(y_test)
     return x_tensor_train,y_tensor_train#,x_tensor_test,y_tensor_test 
+
+def plot(history, epochs, metric):
+        loss_train = history[metric]
+        epochs = [x for x in range(0,epochs)]
+        plt.plot(epochs, loss_train, 'g', label=metric)
+        plt.title(metric)
+        plt.xlabel('Epochs')
+        plt.ylabel(metric)
+        plt.legend()
+        plt.show()
