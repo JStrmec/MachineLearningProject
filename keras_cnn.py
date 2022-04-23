@@ -1,15 +1,26 @@
-from sklearn.metrics import accuracy_score
-import matplotlib.pyplot as plt
 import keras.layers as layers
+from sklearn.metrics import accuracy_score
 from tensorflow import keras
+import matplotlib.pyplot as plt
 import data_processing as d
+from sklearn.model_selection import train_test_split
 import numpy as np
+
+# KERNEL_SIZE = 3
+# FILTERS = 256
+# DROPOUT_RATE = 0.25
+
+# EPOCHS = 100 # arbitrary
+
+# X, y = d.get_encoded_data()
+
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=1)
 
 class keras_CNN():
     def __init__(self, kernel_size, epochs):
         self.EPOCHS = epochs
         self.KERNEL_SIZE = kernel_size
-        self.FILTERS = 32
+        self.FILTERS = 64
         self.DROPOUT_RATE = 0.3
            
     def getModel(self):
@@ -17,10 +28,10 @@ class keras_CNN():
             [
                 layers.Conv1D(self.FILTERS, self.KERNEL_SIZE, padding='same', activation='relu', name="layer1"),
                 layers.LeakyReLU(),
-                layers.Dropout(self.DROPOUT_RATE),
-                layers.Conv1D(self.FILTERS, 5, padding='same', activation='relu', name="layer2"),
+                layers.Dropout(0.4),
+                layers.Conv1D(self.FILTERS / 4, 3, padding='same', activation='relu', name="layer2"),
                 layers.LeakyReLU(),
-                layers.Dropout(self.DROPOUT_RATE),
+                layers.Dropout(0.25),
                 # layers.Conv1D(self.FILTERS / 4, self.KERNEL_SIZE, padding='same', activation='relu', name="layer3"),
                 # layers.LeakyReLU(),
                 # layers.Dropout(self.DROPOUT_RATE),
@@ -53,7 +64,10 @@ class keras_CNN():
         model = self.getModel()
         optimizer = keras.optimizers.Nadam(learning_rate=1e-3, decay=5e-4)
     
-        model.compile(optimizer, 'mse', metrics=[keras.metrics.Accuracy()])
+        model.compile(optimizer, 'mse', metrics=[keras.metrics.Accuracy(),
+                                                    # keras.metrics.Precision(), 
+                                                    # keras.metrics.Recall()
+                                                    ])
 
         # model.build()
         # model.summary()
