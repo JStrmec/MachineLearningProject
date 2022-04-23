@@ -79,7 +79,7 @@ class keras_CNN():
         )
     
         for metric in history.history:
-            self.plot(history.history, self.EPOCHS, metric, "Training")
+            self.plot(history.history, self.EPOCHS, metric)
     
         print("Evaluate on test data")
         results = model.predict(self.X_test, batch_size=32)
