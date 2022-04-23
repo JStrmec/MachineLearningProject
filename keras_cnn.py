@@ -20,18 +20,21 @@ class keras_CNN():
     def __init__(self, kernel_size, epochs):
         self.EPOCHS = epochs
         self.KERNEL_SIZE = kernel_size
-        self.FILTERS = 64
+        self.FILTERS = 32
         self.DROPOUT_RATE = 0.3
            
-    def getModel(self, X_train):
+    def getModel(self):
         return keras.Sequential(
             [
                 layers.Conv1D(self.FILTERS, self.KERNEL_SIZE, padding='same', activation='relu', name="layer1"),
                 layers.LeakyReLU(),
                 layers.Dropout(self.DROPOUT_RATE),
-                layers.Conv1D(self.FILTERS / 2, self.KERNEL_SIZE, padding='same', activation='relu', name="layer2"),
+                layers.Conv1D(self.FILTERS, 5, padding='same', activation='relu', name="layer2"),
                 layers.LeakyReLU(),
                 layers.Dropout(self.DROPOUT_RATE),
+                # layers.Conv1D(self.FILTERS / 4, self.KERNEL_SIZE, padding='same', activation='relu', name="layer3"),
+                # layers.LeakyReLU(),
+                # layers.Dropout(self.DROPOUT_RATE),
                 layers.Dense(13, activation='softmax', name='output_layer')
             ])
 
