@@ -1,26 +1,20 @@
 
 import data_processing as d
-from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
+import matplotlib.pyplot as plt
+from sklearn.metrics import accuracy_score
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import accuracy_score
-import matplotlib.pyplot as plt
-import torch
-from torch.autograd import Variable
+from sklearn.model_selection import train_test_split
 
+average_accurracy=[]
 
-X,_ = d.get_encoded_data()
-y = d.get_y()
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=1)
+for x in range(0,10):
+    X,_ = d.get_encoded_data('MachineLearningProject/datasets/VirusSample.csv')
+    y = d.get_SVM_y('MachineLearningProject/datasets/VirusSample.csv')
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.10, random_state=4)
+    clf = make_pipeline(StandardScaler(), SVC(gamma='auto', kernel='rbf'))
+    clf.fit(X_train, y_train)
+    average_accurracy.append(clf.score(X_test, y_test))
 
-clf = make_pipeline(StandardScaler(), SVC(gamma='auto'))
-clf.fit(X_train, y_train)
-#Pipeline(steps=[('standardscaler', StandardScaler()),('svc', SVC(gamma='auto'))])
-predict = clf.predict(X_test)
-print(predict)
-print(accuracy_score(y_test, predict))
-predict2 = clf.score(X_test, y_test)
-print(predict2)
-EPOCHS = 1000 
-plt.plot(EPOCHS , predict2, color='red', linewidth=3)
+plt.plot([x for x in range(0,10)], average_accurracy, color='red', linewidth=3)
