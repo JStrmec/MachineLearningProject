@@ -26,17 +26,18 @@ class keras_CNN():
     def getModel(self):
         return keras.Sequential(
             [
-                layers.Conv1D(self.FILTERS, self.KERNEL_SIZE, padding='same', activation='relu', name="layer1"),
+                # layers.Dense(13, name='layer0'),
+                # layers.Dropout(0.4),
                 layers.LeakyReLU(),
-                layers.Dropout(0.4),
-                layers.Conv1D(self.FILTERS / 4, 3, padding='same', activation='relu', name="layer2"),
+                layers.Conv1D(130, (self.KERNEL_SIZE,), padding='same', name="layer1"),
+                #layers.Dropout(0.4),
+                layers.LeakyReLU(),
+                layers.Conv1D(65, (self.KERNEL_SIZE,), padding='same', name="layer2"),
                 layers.LeakyReLU(),
                 layers.Dropout(0.25),
-                # layers.Conv1D(self.FILTERS / 4, self.KERNEL_SIZE, padding='same', activation='relu', name="layer3"),
-                # layers.LeakyReLU(),
-                # layers.Dropout(self.DROPOUT_RATE),
-                layers.Dense(13, activation='softmax', name='output_layer')
-            ])
+                layers.Dense(13, name='output_layer'),
+                layers.Softmax()
+            ]) 
 
     def plot(self, history, epochs, metric):
         loss_train = history[metric]
@@ -75,6 +76,7 @@ class keras_CNN():
             self.X_train,
             self.y_train,
             batch_size=32,
+            bias=True,
             epochs=self.EPOCHS
         )
     
