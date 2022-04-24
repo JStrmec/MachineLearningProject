@@ -26,11 +26,7 @@ class keras_CNN():
     def getModel(self):
         return keras.Sequential(
             [
-                # layers.Dense(13, name='layer0'),
-                # layers.Dropout(0.4),
-                layers.LeakyReLU(),
                 layers.Conv1D(130, (self.KERNEL_SIZE,), padding='same', name="layer1"),
-                #layers.Dropout(0.4),
                 layers.LeakyReLU(),
                 layers.Conv1D(65, (self.KERNEL_SIZE,), padding='same', name="layer2"),
                 layers.LeakyReLU(),
