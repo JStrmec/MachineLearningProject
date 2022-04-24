@@ -71,15 +71,16 @@ def YnumpyToTensor(y_data_np):
 
 
 def splitData(x, y):
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.33, random_state=1)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.10, random_state=1)
     return np.array(x_train), np.array(x_test), np.array(y_train), np.array(y_test)
 
-def toTensors(x, y):
-    x_tensor_train = XnumpyToTensor(x)
-    y_tensor_train = YnumpyToTensor(y)
-    # x_tensor_test = XnumpyToTensor(x_test)
-    # y_tensor_test = YnumpyToTensor(y_test)
-    return x_tensor_train,y_tensor_train#,x_tensor_test,y_tensor_test 
+def toTensors(x,y):
+    x_train, x_test, y_train, y_test = splitData(x, y)
+    x_tensor_train = XnumpyToTensor(x_train)
+    y_tensor_train = YnumpyToTensor(y_train)
+    x_tensor_test = XnumpyToTensor(x_test)
+    y_tensor_test = YnumpyToTensor(y_test)
+    return x_tensor_train,y_tensor_train,x_tensor_test,y_tensor_test 
 
 def plot(history, length, metric):
     epochs = [x for x in range(0,length)]

@@ -22,12 +22,8 @@ X, y = d.get_encoded_data(file)
 # Keras CNN Data
 X_train, X_test, y_train, y_test = d.splitData(X, y)
 
-# Convert data to Tensors to Incease Computation time for Torch CNN
-X_tensor_train,Y_tensor_train  = d.toTensors(X, y)
-
-
 ### Variables
-EPOCHS = 100 # arbitrary
+EPOCHS = 10 # arbitrary
 
 # Torch CNN
 N_FEATURES = X_train.shape[1] # Number of features for the input layer
@@ -37,12 +33,12 @@ N_CNN_KERNEL, MAX_POOL_KERNEL = 3, 4 # CNN kernel size
 
 
 
+import torch_cnn as tcnn
 ### Torch CNN
 # Build CNN
 net = tcnn.CNN(n_feature=N_FEATURES, n_hidden=N_HIDDEN, n_output=13, n_cnn_kernel=N_CNN_KERNEL)   # define the network    
 # Train and Test
-train_results, results = tcnn.trainTestCNN(net,X_tensor_train,Y_tensor_train, EPOCHS)
+train_results, results = tcnn.trainTestCNN(net,X,y,EPOCHS)
 # Plotting
-d.plot(results, 10, "Accuracy")
-
+d.plot(results, len(results["Accuracy"]), "Accuracy")
    
