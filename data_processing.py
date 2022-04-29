@@ -10,13 +10,15 @@ from keras.preprocessing.text import Tokenizer
 from sklearn.model_selection import train_test_split                  
 from keras.preprocessing.sequence import pad_sequences
 
+f = 'datasets/VirusSample.csv'
+
 # Read in csv file
 def read_csv(file):
     df = pd.read_csv(file)#'MachineLearningProject/datasets/VirusSample.csv'
     return df
 
 
-def get_SVM_y(file ='datasets/VirusSample.csv'):
+def get_SVM_y(file =f):
     df = read_csv(file)
     y = LabelEncoder().fit_transform(df['class'].values)
     return  y
@@ -29,7 +31,7 @@ def get_data(file):
     return df["api"].values, df['class'].values
 
 
-def get_encoded_data(file ='datasets/VirusSample.csv'):
+def get_encoded_data(file =f):
     # Variables
     #len(set_api)=(7966)
     y_data = np.zeros((9795, 13)) # (9795,13)
@@ -90,3 +92,18 @@ def plot(history, length, metric):
     plt.ylabel(metric)
     plt.legend()
     plt.show()
+
+def dataDistribution(file = f):
+    df = read_csv(file)
+    temp = {}
+    y = list(df['class'].values)
+    set_y = set(y)
+    for x in set_y:
+        num = y.count(x)
+        temp[x] = num
+    temp = dict(sorted(temp.items(), key=lambda item: -item[1])).items()
+    total=len(y)
+    print("class" , "count" , "percentage" )
+    for x,y in temp:
+        percent = float(y/total)*100
+        print(x , y , "{:.2f}".format(percent) ,"%" )
